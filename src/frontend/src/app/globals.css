@@ -97,29 +97,32 @@
 .dark {
   --radius: 0.875rem;
 
-  /* Base — carvão azul-frio profundo (NUNCA #000) */
-  --background:           oklch(0.06 0.005 240);
-  --foreground:           oklch(0.96 0.004 240);
+  /* Base — azul-marinho profundo (navy), NUNCA preto puro.
+     Croma ~0.025 dá temperatura azul sem virar cinza morto.
+     L ~0.10 é escuro mas respirável (olho descansa). */
+  --background:           oklch(0.105 0.025 250);
+  --foreground:           oklch(0.96 0.004 250);
 
-  /* Cards flutuam: levemente mais claros que o body (elevated card hierarchy) */
-  --card:                 oklch(0.10 0.006 240);
-  --card-foreground:      oklch(0.96 0.004 240);
-  --card-2:               oklch(0.135 0.007 240); /* aninhado / popover */
-  --popover:              oklch(0.12 0.007 240);
-  --popover-foreground:   oklch(0.96 0.004 240);
+  /* Cards flutuam: navy levemente mais claro (elevated card hierarchy).
+     Croma sobe um pouco pra aprofundar o azul na elevação. */
+  --card:                 oklch(0.145 0.028 250);
+  --card-foreground:      oklch(0.96 0.004 250);
+  --card-2:               oklch(0.185 0.030 250); /* aninhado / popover */
+  --popover:              oklch(0.165 0.030 250);
+  --popover-foreground:   oklch(0.96 0.004 250);
 
   /* Primary = accent ciano (marca) */
   --primary:              oklch(0.78 0.15 195);
-  --primary-foreground:   oklch(0.08 0.02 240);
+  --primary-foreground:   oklch(0.10 0.03 250);
 
-  --secondary:            oklch(0.16 0.006 240);
-  --secondary-foreground: oklch(0.88 0.004 240);
+  --secondary:            oklch(0.20 0.028 250);
+  --secondary-foreground: oklch(0.88 0.006 250);
 
-  --muted:                oklch(0.14 0.006 240);
-  --muted-foreground:     oklch(0.64 0.008 240);
+  --muted:                oklch(0.18 0.025 250);
+  --muted-foreground:     oklch(0.68 0.012 250);
 
-  --accent:               oklch(0.16 0.006 240);
-  --accent-foreground:    oklch(0.96 0.004 240);
+  --accent:               oklch(0.20 0.028 250);
+  --accent-foreground:    oklch(0.96 0.004 250);
 
   --destructive:          oklch(0.62 0.24 27);
 
@@ -129,17 +132,17 @@
   --status-alert: oklch(0.66 0.24 27);  /* vermelho danger */
   --status-info:  oklch(0.70 0.15 230); /* azul info */
 
-  /* Lines — 2-tier (hairlines translúcidas) */
+  /* Lines — 2-tier (hairlines translúcidas azul-tint) */
   --line:                 oklch(1 0 0 / 0.10);
   --line-2:               oklch(1 0 0 / 0.06);
   --border:               oklch(1 0 0 / 0.09);
   --input:                oklch(1 0 0 / 0.12);
   --ring:                 oklch(0.78 0.15 195 / 0.5);
 
-  /* Surfaces (3-tier) */
-  --surface-1: oklch(0.10 0.006 240);
-  --surface-2: oklch(0.14 0.006 240);
-  --surface-3: oklch(0.18 0.006 240);
+  /* Surfaces (3-tier) — escada navy coerente */
+  --surface-1: oklch(0.145 0.028 250);
+  --surface-2: oklch(0.185 0.030 250);
+  --surface-3: oklch(0.235 0.032 250);
 
   /* Glass material — translucência + blur */
   --glass-bg:           oklch(1 0 0 / 0.05);
@@ -156,18 +159,18 @@
   --wrench-gradient-from:  oklch(0.82 0.15 195);
   --wrench-gradient-to:    oklch(0.55 0.20 230);
 
-  /* Sidebar dedicado */
-  --sidebar:                    oklch(0.07 0.005 240);
-  --sidebar-foreground:         oklch(0.66 0.008 240);
+  /* Sidebar — navy levemente mais fundo que o body (sensaçã de recuo) */
+  --sidebar:                    oklch(0.095 0.025 250);
+  --sidebar-foreground:         oklch(0.70 0.014 250);
   --sidebar-primary:            oklch(0.78 0.15 195);
-  --sidebar-primary-foreground: oklch(0.08 0.02 240);
+  --sidebar-primary-foreground: oklch(0.10 0.03 250);
   --sidebar-accent:             oklch(1 0 0 / 0.05);
-  --sidebar-accent-foreground:  oklch(0.96 0.004 240);
+  --sidebar-accent-foreground:  oklch(0.96 0.004 250);
   --sidebar-border:             oklch(1 0 0 / 0.07);
   --sidebar-ring:               oklch(0.78 0.15 195 / 0.5);
 
   /* Nav icon helpers */
-  --nav-icon-dim:     oklch(0.62 0.008 240);
+  --nav-icon-dim:     oklch(0.66 0.012 250);
   --nav-icon-accent:  oklch(0.78 0.15 195);
 
   /* Charts — ciano primário + paleta complementar */
@@ -177,8 +180,8 @@
   --chart-4: oklch(0.70 0.20 300); /* violeta */
   --chart-5: oklch(0.66 0.24 27);  /* coral */
 
-  /* Shadows tingidas azul-frio, ultra-difusas, baixa opacidade */
-  --shadow-color: 240 40% 3%;
+  /* Shadows tingidas navy profundo, ultra-difusas */
+  --shadow-color: 250 50% 6%;
   --shadow-sm: 0 1px 2px 0 hsl(var(--shadow-color) / 0.30);
   --shadow-md: 0 4px 16px -2px hsl(var(--shadow-color) / 0.40),
                0 2px 6px -2px hsl(var(--shadow-color) / 0.28);
@@ -188,13 +191,13 @@
                0 12px 28px -6px hsl(var(--shadow-color) / 0.45);
 
   /* Layout surfaces */
-  --topbar-bg:  oklch(0.07 0.005 240 / 0.72);
+  --topbar-bg:  oklch(0.095 0.025 250 / 0.72);
   --sidenav-bg: var(--sidebar);
 
-  /* Mesh gradient orbs — profundidade atmosférica no body */
-  --mesh-orb-1: oklch(0.78 0.15 195 / 0.10);  /* ciano sup-esq */
-  --mesh-orb-2: oklch(0.62 0.20 300 / 0.08);  /* violeta inf-dir */
-  --mesh-orb-3: oklch(0.55 0.15 230 / 0.07);  /* azul centro */
+  /* Mesh gradient orbs — profundidade atmosférica no body (mais visíveis no navy) */
+  --mesh-orb-1: oklch(0.78 0.15 195 / 0.14);  /* ciano sup-esq */
+  --mesh-orb-2: oklch(0.62 0.20 300 / 0.10);  /* violeta inf-dir */
+  --mesh-orb-3: oklch(0.55 0.17 250 / 0.08);  /* navy mais profundo centro */
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
