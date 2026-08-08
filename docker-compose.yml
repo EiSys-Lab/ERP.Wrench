@@ -1,0 +1,96 @@
+# Wrench ERP-Oficina — ambiente Docker completo.
+#
+# Front End First: por ora só o serviço 'frontend' sobe. Os serviços
+# 'postgres' e 'redis' ficam prontos (comentados por padrão) para quando o
+# backend (.NET) chegar na Fase 4 — basta descomentar e 'docker compose up -d'.
+#
+# Uso:
+#   docker compose up -d frontend        # sobe só o frontend
+#   docker compose up -d                 # sobe tudo (quando backend existir)
+#   docker compose down                  # para e remove containers
+
+name: wrench-oficina
+
+services:
+  # ─── Frontend (Next.js 16) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+      args:
+        # URL do backend — trocar quando a API .NET existir (Fase 4).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5012}
+    container_name: wrench-frontend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:5012}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    # Descomente quando o backend existir para respeitar ordem de subida:
+    # depends_on:
+    #   backend:
+    #     condition: service_healthy
+
+  # ─── Backend (.NET 10) — entra na Fase 4 ────────────────────────────────
+  # backend:
+  #   build:
+  #     context: ./src/backend
+  #     dockerfile: src/Wrench.Api/Dockerfile
+  #   container_name: wrench-backend
+  #   ports:
+  #     - "${BACKEND_PORT:-5012}:8080"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=wrench_oficina;Username=wrench;Password=wrench
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+
+  # ─── PostgreSQL 17 ──────────────────────────────────────────────────────
+  # Pronto para quando o backend existir. Banco: wrench_oficina.
+  # Porta 5434 no host p/ não conflitar com Indagor (5432) e RFClub (5433).
+  postgres:
+    image: postgres:17-alpine
+    container_name: wrench-postgres
+    ports:
+      - "${POSTGRES_PORT:-5434}:5432"
+    environment:
+      POSTGRES_DB: wrench_oficina
+      POSTGRES_USER: wrench
+      POSTGRES_PASSWORD: wrench
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wrench -d wrench_oficina"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ─── Redis 7 (cache + SignalR backplane futuro) ─────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: wrench-redis
+    ports:
+      - "${REDIS_PORT:-6380}:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
