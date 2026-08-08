@@ -4,22 +4,23 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * Wrench GlassCard — Double-Bezel (Doppelrand).
- * Outer shell translúcido + inner core sólido. Assinatura Ethereal Glass.
+ * Wrench GlassCard — card de conteúdo.
  *
- * Usto: <GlassCard className="..."><div>conteúdo</div></GlassCard>
- * ou com bezel exposto: <GlassCard bezel>...</GlassCard>
+ * Padrão: card simples com UMA borda (clean, sem duplo contorno).
+ * `bezel` (opcional): Double-Bezel para casos de destaque (login, hero) —
+ * outer shell translúcido + inner core. Evitar em listagens/dashboards
+ * (a borda dupla pesa a leitura).
  */
 export function GlassCard({
   className,
-  bezel = true,
+  bezel = false,
   hover = false,
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
-  /** Aplica o Double-Bezel (outer + inner). Default true. */
+  /** Aplica o Double-Bezel (outer + inner). Default false (card simples). */
   bezel?: boolean;
-  /** Habilita hover glass-hover no shell. */
+  /** Habilita hover glass-hover. */
   hover?: boolean;
 }) {
   if (!bezel) {
@@ -46,7 +47,7 @@ export function GlassCard({
       )}
       {...props}
     >
-      <div className="bezel-inner">{children}</div>
+      <div className="bezel-inner p-5">{children}</div>
     </div>
   );
 }

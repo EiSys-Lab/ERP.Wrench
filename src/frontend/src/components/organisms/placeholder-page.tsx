@@ -29,20 +29,18 @@ export function PlaceholderPage({
     <>
       <PageHeader title={title} subtitle={subtitle} />
       <motion.div {...fadeUp(0.1)}>
-        <GlassCard className="p-2">
-          <div className="bezel-inner p-2">
-            <EmptyState
-              icon={Icon}
-              title={title}
-              message={description}
-              size="lg"
-              action={
-                <Button variant="glass" disabled>
-                  {ctaLabel}
-                </Button>
-              }
-            />
-          </div>
+        <GlassCard className="p-6">
+          <EmptyState
+            icon={Icon}
+            title={title}
+            message={description}
+            size="lg"
+            action={
+              <Button variant="glass" disabled>
+                {ctaLabel}
+              </Button>
+            }
+          />
         </GlassCard>
       </motion.div>
     </>
