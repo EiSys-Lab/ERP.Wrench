@@ -17,6 +17,7 @@ import { GlassCard } from "@/components/atoms/glass-card";
 import { StatusBadge } from "@/components/atoms/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { KpiCard } from "@/components/molecules/kpi-card";
+import { KpiGridSkeleton, TableSkeleton } from "@/components/molecules/skeletons";
 import {
   type Lancamento,
   type TipoLancamento,
@@ -29,6 +30,7 @@ import {
 import { LANCAMENTOS_MOCK } from "../mock";
 import { brl, formatDate } from "@/lib/formatters";
 import { SPRING_DRAWER } from "@/lib/motion";
+import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +43,7 @@ export function LancamentosView() {
   const [statusFiltro, setStatusFiltro] = useState("");
   const [baixa, setBaixa] = useState<Lancamento | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const loading = useLoadingDelay();
 
   const filtrados = useMemo(() => {
     const q = busca.toLowerCase().trim();
@@ -64,6 +67,16 @@ export function LancamentosView() {
   );
   const totalReceber = aReceber.reduce((s, l) => s + (l.valor - l.valorPago), 0);
   const totalPagar = aPagar.reduce((s, l) => s + (l.valor - l.valorPago), 0);
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Lançamentos" subtitle="Carregando..." />
+        <KpiGridSkeleton count={3} />
+        <TableSkeleton rows={8} cols={7} />
+      </>
+    );
+  }
 
   function abrirBaixa(l: Lancamento) {
     setBaixa({ ...l });

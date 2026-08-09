@@ -15,6 +15,7 @@ import { Input, Field } from "@/components/ui/input";
 import { GlassCard } from "@/components/atoms/glass-card";
 import { StatusBadge } from "@/components/atoms/status-badge";
 import { Separator } from "@/components/ui/separator";
+import { TableSkeleton } from "@/components/molecules/skeletons";
 import {
   type Peca,
   UNIDADE_LABEL,
@@ -27,6 +28,7 @@ import {
 } from "../mock";
 import { brl, pct, num } from "@/lib/formatters";
 import { SPRING_DRAWER } from "@/lib/motion";
+import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +40,7 @@ export function PecasView() {
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
   const [editando, setEditando] = useState<Peca | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const loading = useLoadingDelay();
 
   const filtradas = useMemo(() => {
     const q = busca.toLowerCase().trim();
@@ -89,6 +92,15 @@ export function PecasView() {
     // Mock: na Fase 7 dispara POST/PUT /api/pecas
     toast.success(`${editando.nome} salvo`);
     setDrawerOpen(false);
+  }
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Peças" subtitle="Carregando..." />
+        <TableSkeleton rows={8} cols={7} />
+      </>
+    );
   }
 
   return (

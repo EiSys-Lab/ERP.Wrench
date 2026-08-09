@@ -12,6 +12,7 @@ import {
 import { PageHeader } from "@/components/organisms/page-header";
 import { GlassCard } from "@/components/atoms/glass-card";
 import { KpiCard } from "@/components/molecules/kpi-card";
+import { KpiGridSkeleton, ChartSkeleton } from "@/components/molecules/skeletons";
 import { DASHBOARD_MOCK } from "../mock";
 import {
   FaturamentoChart,
@@ -21,13 +22,28 @@ import {
 } from "./dashboard-charts";
 import { brl, pct } from "@/lib/formatters";
 import { fadeUp } from "@/lib/motion";
+import { useLoadingDelay } from "@/lib/use-loading-delay";
 
 /**
  * Wrench Dashboard — visão geral da oficina.
  * KPIs animados + 3 gráficos Recharts + top peças/serviços.
  */
 export function DashboardView() {
+  const loading = useLoadingDelay();
   const { kpis, faturamento, osPorStatus, topPecas, topServicos } = DASHBOARD_MOCK;
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Dashboard" subtitle="Visão geral da oficina" />
+        <KpiGridSkeleton count={4} />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <ChartSkeleton height={220} />
+          <ChartSkeleton height={220} />
+        </div>
+      </>
+    );
+  }
 
   const deltaFaturamento =
     (kpis.faturamentoMes - kpis.faturamentoAnterior) / kpis.faturamentoAnterior;

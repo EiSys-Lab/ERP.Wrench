@@ -15,6 +15,7 @@ import { PageHeader } from "@/components/organisms/page-header";
 import { GlassCard } from "@/components/atoms/glass-card";
 import { StatusBadge } from "@/components/atoms/status-badge";
 import { KpiCard } from "@/components/molecules/kpi-card";
+import { KpiGridSkeleton, TableSkeleton } from "@/components/molecules/skeletons";
 import { Button } from "@/components/ui/button";
 import {
   type SaldoEstoque,
@@ -25,6 +26,7 @@ import {
 import { SALDOS_MOCK, MOVIMENTOS_MOCK } from "../mock";
 import { brl, num, formatDateTime } from "@/lib/formatters";
 import { fadeUp } from "@/lib/motion";
+import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -35,6 +37,7 @@ type Tab = "movimentos" | "saldo" | "sugestoes";
  */
 export function EstoqueView() {
   const [tab, setTab] = useState<Tab>("saldo");
+  const loading = useLoadingDelay();
 
   const valorTotal = SALDOS_MOCK.reduce((s, x) => s + x.valorTotal, 0);
   const abaixoMin = SALDOS_MOCK.filter((s) => s.quantidade <= s.estoqueMinimo);
@@ -47,6 +50,16 @@ export function EstoqueView() {
     custoEstimado: Math.max(s.estoqueMinimo * 2 - s.quantidade, s.estoqueMinimo) * s.preco * 0.6,
   }));
   const custoTotalCompras = sugestoes.reduce((s, x) => s + x.custoEstimado, 0);
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Estoque" subtitle="Carregando..." />
+        <KpiGridSkeleton count={4} />
+        <TableSkeleton rows={8} cols={7} />
+      </>
+    );
+  }
 
   return (
     <>

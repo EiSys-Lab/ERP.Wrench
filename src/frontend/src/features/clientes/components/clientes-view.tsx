@@ -21,6 +21,7 @@ import { GlassCard } from "@/components/atoms/glass-card";
 import { StatusBadge } from "@/components/atoms/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { KpiCard } from "@/components/molecules/kpi-card";
+import { KpiGridSkeleton, TableSkeleton } from "@/components/molecules/skeletons";
 import {
   type Cliente,
   CLIENTE_TIPO_LABEL,
@@ -29,6 +30,7 @@ import {
 import { CLIENTES_MOCK } from "../mock";
 import { brl, num, formatDate, formatDocumento, formatPhone } from "@/lib/formatters";
 import { SPRING_DRAWER, fadeUp } from "@/lib/motion";
+import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { toast } from "sonner";
 
 /**
@@ -39,6 +41,7 @@ export function ClientesView() {
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [selecionado, setSelected] = useState<Cliente | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const loading = useLoadingDelay();
 
   const filtrados = useMemo(() => {
     const q = busca.toLowerCase().trim();
@@ -60,6 +63,16 @@ export function ClientesView() {
   function abrir(c: Cliente) {
     setSelected(c);
     setDrawerOpen(true);
+  }
+
+  if (loading) {
+    return (
+      <>
+        <PageHeader title="Clientes" subtitle="Carregando..." />
+        <KpiGridSkeleton count={3} />
+        <TableSkeleton rows={6} cols={7} />
+      </>
+    );
   }
 
   return (
