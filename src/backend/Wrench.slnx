@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Wrench.Domain/Wrench.Domain.csproj" />
+  <Project Path="src/Wrench.Application/Wrench.Application.csproj" />
+  <Project Path="src/Wrench.Infrastructure/Wrench.Infrastructure.csproj" />
+  <Project Path="src/Wrench.Api/Wrench.Api.csproj" />
+</Solution>

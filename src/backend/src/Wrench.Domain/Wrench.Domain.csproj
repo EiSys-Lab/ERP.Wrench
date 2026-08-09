@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Camada Domain — pura, sem I/O. Regras de negócio vivem aqui.
+    Zero referências a projetos. Só ErrorOr (result type) e SmartEnum.
+  -->
+  <ItemGroup>
+    <PackageReference Include="Ardalis.SmartEnum" />
+    <PackageReference Include="ErrorOr" />
+  </ItemGroup>
+</Project>

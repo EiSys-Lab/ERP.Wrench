@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Camada Application — orquestração de casos de uso (Vertical Slice).
+    Conhece Domain mas não conhece Infrastructure.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\Wrench.Domain\Wrench.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="FluentValidation" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+    <PackageReference Include="ErrorOr" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+</Project>

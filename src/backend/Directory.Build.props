@@ -1,0 +1,24 @@
+<Project>
+  <!--
+    Props compartilhados por todos os projetos do backend Wrench.
+    TFM unificado (.NET 10), warnings como erros, nullable habilitado.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
+    <NoWarn>CS1591</NoWarn>
+
+    <Version>0.1.0</Version>
+    <Company>EiSys</Company>
+    <Product>Wrench ERP-Oficina</Product>
+
+    <!-- Source link -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+</Project>
