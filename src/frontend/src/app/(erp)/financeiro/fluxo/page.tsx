@@ -1,15 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { PlaceholderPage } from "@/components/organisms/placeholder-page";
+import { FluxoView } from "@/features/financeiro";
 
-export default function Page() {
-  return (
-    <PlaceholderPage
-      title="Fluxo de Caixa"
-      subtitle="Entradas e saídas do período"
-      icon={TrendingUp}
-      description="Projeção de fluxo de caixa por dia/semana/mês. Disponível na Fase 2."
-    />
-  );
+export default function FluxoPage() {
+  return <FluxoView />;
 }

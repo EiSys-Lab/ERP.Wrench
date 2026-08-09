@@ -1,15 +1,7 @@
 "use client";
 
-import { Receipt } from "lucide-react";
-import { PlaceholderPage } from "@/components/organisms/placeholder-page";
+import { LancamentosView } from "@/features/financeiro";
 
-export default function Page() {
-  return (
-    <PlaceholderPage
-      title="Lançamentos"
-      subtitle="Contas a receber e pagar"
-      icon={Receipt}
-      description="Títulos financeiros com status de pagamento. Disponível na Fase 2."
-    />
-  );
+export default function LancamentosPage() {
+  return <LancamentosView />;
 }
