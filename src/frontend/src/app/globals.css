@@ -541,6 +541,25 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE ADJUSTMENTS — densidade e espaçamento abaixo de 768px.
+   O SideNav colapsa automaticamente (CSS) e o padding do main reduz.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Reduz padding da área de conteúdo */
+  main {
+    padding: 1rem !important;
+  }
+  /* Esconde o texto "Buscar..." no topbar para economizar espaço */
+  header span[class*="Buscar"] {
+    display: none;
+  }
+  /* PageHeader: reduz margem e permite quebra */
+  h1 {
+    font-size: 1.125rem;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    PAGE STAGGER — entrada escalonada via CSS puro (zero JS).
    .app-template envolve o conteúdo de cada rota (template.tsx do App Router).
    Opt-out: data-no-stagger no root da página.
