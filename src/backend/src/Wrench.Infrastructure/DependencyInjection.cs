@@ -8,7 +8,11 @@ using System.Text;
 using Wrench.Application.Common.Persistence;
 using Wrench.Application.Common.Security;
 using Wrench.Application.Common.Tenancy;
+using Wrench.Domain.Catalogo;
+using Wrench.Domain.Clientes;
+using Wrench.Domain.Estoque;
 using Wrench.Domain.Identity;
+using Wrench.Domain.OrdensServico;
 using Wrench.Domain.Tenancy;
 using Wrench.Infrastructure.Identity;
 using Wrench.Infrastructure.Persistence;
@@ -38,6 +42,13 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();
+        // Negócio
+        services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+        services.AddScoped<IClienteRepository, ClienteRepository>();
+        services.AddScoped<IPecaRepository, PecaRepository>();
+        services.AddScoped<IServicoRepository, ServicoRepository>();
+        services.AddScoped<ICategoriaRepository, CategoriaPecaRepository>();
+        services.AddScoped<IMovimentoEstoqueRepository, MovimentoEstoqueRepository>();
 
         // Identity / Auth
         services.AddScoped<IPasswordHasher, PasswordHasher>();

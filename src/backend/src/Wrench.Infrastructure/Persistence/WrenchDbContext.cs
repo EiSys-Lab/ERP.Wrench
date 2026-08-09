@@ -1,7 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Wrench.Application.Common.Tenancy;
+using Wrench.Domain.Catalogo;
+using Wrench.Domain.Clientes;
 using Wrench.Domain.Common;
+using Wrench.Domain.Estoque;
 using Wrench.Domain.Identity;
+using Wrench.Domain.OrdensServico;
 using Wrench.Domain.Tenancy;
 
 namespace Wrench.Infrastructure.Persistence;
@@ -30,6 +34,14 @@ public sealed class WrenchDbContext : DbContext
 
     // Tenancy (admin-level)
     public DbSet<Tenant> Tenants => Set<Tenant>();
+
+    // Negócio (tenant-scoped via query filter)
+    public DbSet<OrdemServico> OrdensServico => Set<OrdemServico>();
+    public DbSet<Cliente> Clientes => Set<Cliente>();
+    public DbSet<Peca> Pecas => Set<Peca>();
+    public DbSet<Servico> Servicos => Set<Servico>();
+    public DbSet<CategoriaPeca> CategoriasPeca => Set<CategoriaPeca>();
+    public DbSet<MovimentoEstoque> MovimentosEstoque => Set<MovimentoEstoque>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,11 +77,13 @@ public sealed class WrenchDbContext : DbContext
 
             var tenantId = _tenantContext.TenantId;
 
-            // Expressão: (Guid?)e.TenantId == <tenantId do contexto>
+            // Expressão: (Guid?)e.TenantId == <tenantId do contexto>.
+            // Converte a prop (Guid não-nullable) para Guid? antes de comparar.
             var param = System.Linq.Expressions.Expression.Parameter(entityType.ClrType, "e");
             var prop = System.Linq.Expressions.Expression.Property(param, nameof(ITenantEntity.TenantId));
+            var propNullable = System.Linq.Expressions.Expression.Convert(prop, typeof(Guid?));
             var constant = System.Linq.Expressions.Expression.Constant(tenantId, typeof(Guid?));
-            var equal = System.Linq.Expressions.Expression.Equal(prop, constant);
+            var equal = System.Linq.Expressions.Expression.Equal(propNullable, constant);
             var lambda = System.Linq.Expressions.Expression.Lambda(equal, param);
 
             entityType.SetQueryFilter(lambda);
