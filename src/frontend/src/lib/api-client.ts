@@ -12,13 +12,98 @@
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5012";
 
-/** ProblemDetails RFC 7807. */
+/** ProblemDetails RFC 7807 enriquecido com categoria e traceId. */
 export type ApiProblem = {
   status?: number;
   title?: string;
   detail?: string;
   errors?: Record<string, string[]>;
+  /** Categoria do erro (do backend): ValidationError, ServerError, etc. */
+  category?: string;
+  /** ID de rastreamento para o suporte. */
+  traceId?: string;
+  timestamp?: string;
 };
+
+/** Tipo de erro para classificação UI. */
+export type ErrorKind = "user" | "system" | "network" | "auth";
+
+/**
+ * Classifica um erro e retorna a mensagem certa para o usuário.
+ *
+ * - user: erro de validação (input inválido). Mensagem do backend.
+ * - system: bug/infra. Mensagem genérica + traceId para suporte.
+ * - network: API fora do ar / sem conexão. Orientação de retry.
+ * - auth: sessão expirada. Orienta relogin.
+ */
+export function classifyError(err: unknown): {
+  kind: ErrorKind;
+  message: string;
+  traceId?: string;
+} {
+  // Erro de rede (API não respondeu)
+  if (err instanceof TypeError && err.message.includes("fetch")) {
+    return {
+      kind: "network",
+      message: "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.",
+    };
+  }
+
+  if (err instanceof ApiError) {
+    const category = err.problem.category;
+    const traceId = err.problem.traceId;
+
+    // Erro de validação (usuário errou input)
+    if (category === "ValidationError" || (err.status >= 400 && err.status < 500 && category !== "ServerError")) {
+      return {
+        kind: "user",
+        // Mensagem do backend é amigável (ex: "Cliente é obrigatório")
+        message: err.problem.detail ?? err.problem.title ?? "Dados inválidos. Verifique os campos e tente novamente.",
+        traceId,
+      };
+    }
+
+    // Não autorizado
+    if (err.status === 401 || category === "Unauthorized") {
+      return {
+        kind: "auth",
+        message: "Sua sessão expirou. Faça login novamente.",
+        traceId,
+      };
+    }
+
+    // Recurso não encontrado
+    if (err.status === 404) {
+      return {
+        kind: "user",
+        message: err.problem.detail ?? "Recurso não encontrado.",
+        traceId,
+      };
+    }
+
+    // Conflito de regra de negócio
+    if (err.status === 409) {
+      return {
+        kind: "user",
+        message: err.problem.detail ?? "Operação não permitida no estado atual.",
+        traceId,
+      };
+    }
+
+    // Erro de servidor (bug/infra)
+    return {
+      kind: "system",
+      message: "Ocorreu um erro inesperado em nossos servidores. Nossa equipe já foi notificada.",
+      traceId,
+    };
+  }
+
+  // Erro genérico desconhecido
+  return {
+    kind: "system",
+    message: "Ocorreu um erro inesperado. Tente novamente em instantes.",
+  };
+}
 
 /** Erro HTTP com ProblemDetails anexado. */
 export class ApiError extends Error {

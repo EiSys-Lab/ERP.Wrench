@@ -56,6 +56,8 @@ try
 
     // ─── Pipeline ───
     app.UseSerilogRequestLogging();
+    // Handler global deve ser o primeiro para capturar exceções não tratadas.
+    app.UseMiddleware<Wrench.Api.Middleware.GlobalExceptionHandler>();
     app.UseCors("FrontendOrigins");
     app.UseAuthentication();
     app.UseAuthorization();
