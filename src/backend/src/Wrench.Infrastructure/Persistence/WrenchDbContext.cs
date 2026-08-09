@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Wrench.Application.Common.Tenancy;
+using Wrench.Domain.Auditoria;
 using Wrench.Domain.Catalogo;
 using Wrench.Domain.Clientes;
 using Wrench.Domain.Common;
@@ -42,6 +43,9 @@ public sealed class WrenchDbContext : DbContext
     public DbSet<Servico> Servicos => Set<Servico>();
     public DbSet<CategoriaPeca> CategoriasPeca => Set<CategoriaPeca>();
     public DbSet<MovimentoEstoque> MovimentosEstoque => Set<MovimentoEstoque>();
+
+    // Auditoria (admin-level, sem query filter)
+    public DbSet<LogAuditoria> LogsAuditoria => Set<LogAuditoria>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

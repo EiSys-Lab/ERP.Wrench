@@ -58,6 +58,8 @@ try
     app.UseSerilogRequestLogging();
     // Handler global deve ser o primeiro para capturar exceções não tratadas.
     app.UseMiddleware<Wrench.Api.Middleware.GlobalExceptionHandler>();
+    // Auditoria LGPD (Art. 37): registra operações de escrita.
+    app.UseMiddleware<Wrench.Api.Middleware.AuditoriaMiddleware>();
     app.UseCors("FrontendOrigins");
     app.UseAuthentication();
     app.UseAuthorization();
