@@ -3,4 +3,6 @@
   <Project Path="src/Wrench.Application/Wrench.Application.csproj" />
   <Project Path="src/Wrench.Infrastructure/Wrench.Infrastructure.csproj" />
   <Project Path="src/Wrench.Api/Wrench.Api.csproj" />
+  <Project Path="tests/Wrench.Domain.UnitTests/Wrench.Domain.UnitTests.csproj" />
+  <Project Path="tests/Wrench.Api.IntegrationTests/Wrench.Api.IntegrationTests.csproj" />
 </Solution>
