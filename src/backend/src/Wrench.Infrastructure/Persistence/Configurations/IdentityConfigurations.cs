@@ -23,7 +23,9 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
          .WithMany()
          .UsingEntity("user_roles");
 
-        b.Ignore(u => u.TenantId);
+        // TenantId persiste (para saber a qual tenant o usuário pertence),
+        // mas users NÃO passam pelo query filter (admin-level).
+        b.Property(u => u.TenantId).HasDefaultValue(Guid.Empty);
     }
 }
 

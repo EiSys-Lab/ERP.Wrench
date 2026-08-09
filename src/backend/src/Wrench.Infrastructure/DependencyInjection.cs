@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Wrench.Application.Common.Persistence;
@@ -17,6 +18,7 @@ using Wrench.Domain.Tenancy;
 using Wrench.Infrastructure.Identity;
 using Wrench.Infrastructure.Persistence;
 using Wrench.Infrastructure.Persistence.Repositories;
+using Wrench.Infrastructure.Persistence.Seeders;
 using Wrench.Infrastructure.Tenancy;
 
 namespace Wrench.Infrastructure;
@@ -49,6 +51,13 @@ public static class DependencyInjection
         services.AddScoped<IServicoRepository, ServicoRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaPecaRepository>();
         services.AddScoped<IMovimentoEstoqueRepository, MovimentoEstoqueRepository>();
+
+        // Seeders (ordem: Tenant=1, Identity=2, Catalogo=3, Clientes=4)
+        services.AddScoped<IDataSeeder, TenantSeeder>();
+        services.AddScoped<IDataSeeder, IdentitySeeder>();
+        services.AddScoped<IDataSeeder, CatalogoSeeder>();
+        services.AddScoped<IDataSeeder, ClientesSeeder>();
+        services.AddHostedService<DatabaseInitializerService>();
 
         // Identity / Auth
         services.AddScoped<IPasswordHasher, PasswordHasher>();

@@ -389,6 +389,11 @@ namespace Wrench.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("TenantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValue(new Guid("00000000-0000-0000-0000-000000000000"));
+
                     b.Property<DateTimeOffset?>("UltimoAcesso")
                         .HasColumnType("timestamp with time zone");
 

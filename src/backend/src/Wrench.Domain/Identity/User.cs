@@ -34,4 +34,7 @@ public sealed class User : Entity
     public void AtribuirRole(Role role) => _roles.Add(role);
     public void RegistrarAcesso() => UltimoAcesso = DateTimeOffset.UtcNow;
     public void AtualizarSenha(string hash) => PasswordHash = hash;
+
+    /// <summary>Define o tenant dono deste usuário (admin setup).</summary>
+    public void DefinirTenant(Guid tenantId) => TenantId = tenantId;
 }

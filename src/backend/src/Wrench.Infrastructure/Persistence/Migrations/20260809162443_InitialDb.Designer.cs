@@ -12,8 +12,8 @@ using Wrench.Infrastructure.Persistence;
 namespace Wrench.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(WrenchDbContext))]
-    [Migration("20260809153541_AddNegocioAgregados")]
-    partial class AddNegocioAgregados
+    [Migration("20260809162443_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -391,6 +391,11 @@ namespace Wrench.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid>("TenantId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasDefaultValue(new Guid("00000000-0000-0000-0000-000000000000"));
 
                     b.Property<DateTimeOffset?>("UltimoAcesso")
                         .HasColumnType("timestamp with time zone");
