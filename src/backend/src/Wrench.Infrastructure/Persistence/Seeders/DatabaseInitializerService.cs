@@ -20,22 +20,21 @@ public sealed class DatabaseInitializerService : IHostedService
 {
     private readonly IServiceProvider _services;
     private readonly IConfiguration _config;
-    private readonly ITenantContext _tenantContext;
 
     public DatabaseInitializerService(
         IServiceProvider services,
-        IConfiguration config,
-        ITenantContext tenantContext)
+        IConfiguration config)
     {
         _services = services;
         _config = config;
-        _tenantContext = tenantContext;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         using var scope = _services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<WrenchDbContext>();
+        // Resolve o ITenantContext do MESMO escopo do db (Scoped compartilhado).
+        var tenantContext = scope.ServiceProvider.GetRequiredService<ITenantContext>();
 
         var autoMigrate = _config.GetValue("Wrench:Database:AutoMigrate", true);
         var autoSeed = _config.GetValue("Wrench:Database:AutoSeed", true);
@@ -50,7 +49,7 @@ public sealed class DatabaseInitializerService : IHostedService
         if (!autoSeed) return;
 
         // 2. Modo legacy para o TenantSeeder enxergar (fail-closed query filter).
-        _tenantContext.SetContext(Guid.Empty, null, null);
+        tenantContext.SetContext(Guid.Empty, null, null);
 
         // 3. Seeders
         var seeders = scope.ServiceProvider
@@ -72,7 +71,7 @@ public sealed class DatabaseInitializerService : IHostedService
                     var tenant = await db.Tenants.FirstOrDefaultAsync(t => t.Slug == "fininho-auto-eletrica", cancellationToken);
                     if (tenant is not null)
                     {
-                        _tenantContext.SetContext(tenant.Id, null, null);
+                        tenantContext.SetContext(tenant.Id, null, null);
                         Log.Information("DatabaseInitializer: tenant resolvido {TenantId}", tenant.Id);
                     }
                     continue;

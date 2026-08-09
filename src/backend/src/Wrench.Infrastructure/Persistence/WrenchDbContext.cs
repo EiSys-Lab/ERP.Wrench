@@ -52,6 +52,35 @@ public sealed class WrenchDbContext : DbContext
     }
 
     /// <summary>
+    /// Override de SaveChangesAsync para popular auditoria (CreatedAt/UpdatedAt)
+    /// e TenantId em entidades Added (garante que seeders também populam tenant).
+    /// </summary>
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var tenantId = _tenantContext.TenantId;
+
+        foreach (var entry in ChangeTracker.Entries())
+        {
+            if (entry.Entity is not Entity entity) continue;
+
+            if (entry.State == EntityState.Added)
+            {
+                entity.CreatedAt = now;
+                entity.UpdatedAt = now;
+                if (tenantId is not null && tenantId != Guid.Empty && entity.TenantId == Guid.Empty)
+                    entity.TenantId = tenantId.Value;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entity.UpdatedAt = now;
+            }
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
     /// Aplica query filter fail-closed em entidades que implementam ITenantEntity
     /// (exceto admin-level). Quando TenantId é null, nenhuma linha retorna.
     /// </summary>
@@ -75,15 +104,16 @@ public sealed class WrenchDbContext : DbContext
             // Só filtra tipos que implementam ITenantEntity.
             if (!typeof(ITenantEntity).IsAssignableFrom(entityType.ClrType)) continue;
 
-            var tenantId = _tenantContext.TenantId;
-
-            // Expressão: (Guid?)e.TenantId == <tenantId do contexto>.
-            // Converte a prop (Guid não-nullable) para Guid? antes de comparar.
+            // Expressão: (Guid?)e.TenantId == ctx.TenantId
+            // Importante: capturamos a REFERÊNCIA ao _tenantContext (não o valor),
+            // para que o filtro seja reavaliado a cada query (o modelo é cacheado).
             var param = System.Linq.Expressions.Expression.Parameter(entityType.ClrType, "e");
             var prop = System.Linq.Expressions.Expression.Property(param, nameof(ITenantEntity.TenantId));
             var propNullable = System.Linq.Expressions.Expression.Convert(prop, typeof(Guid?));
-            var constant = System.Linq.Expressions.Expression.Constant(tenantId, typeof(Guid?));
-            var equal = System.Linq.Expressions.Expression.Equal(propNullable, constant);
+            var ctxTenantId = System.Linq.Expressions.Expression.Property(
+                System.Linq.Expressions.Expression.Constant(_tenantContext),
+                nameof(ITenantContext.TenantId));
+            var equal = System.Linq.Expressions.Expression.Equal(propNullable, ctxTenantId);
             var lambda = System.Linq.Expressions.Expression.Lambda(equal, param);
 
             entityType.SetQueryFilter(lambda);
