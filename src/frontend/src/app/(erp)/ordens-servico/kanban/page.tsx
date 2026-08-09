@@ -6,16 +6,20 @@ import { PlusCircle } from "lucide-react";
 import { PageHeader } from "@/components/organisms/page-header";
 import { Button } from "@/components/ui/button";
 import { KanbanSkeleton } from "@/components/molecules/skeletons";
-import { OsKanban, OsDrawer, ORDENS_SERVICO_MOCK, type OrdemServico } from "@/features/ordens-servico";
-import { useLoadingDelay } from "@/lib/use-loading-delay";
+import { OsKanban, OsDrawer, type OrdemServico } from "@/features/ordens-servico";
+import { useOrdens, osKeys } from "@/features/ordens-servico/hooks";
+import { osSummaryDtoToOs } from "@/features/ordens-servico/api";
 
 /**
  * Wrench Kanban de OS — quadro arrastável por estágio.
+ * Fase 7: dados via TanStack Query (API real).
  */
 export default function KanbanPage() {
   const [selected, setSelected] = useState<OrdemServico | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const loading = useLoadingDelay();
+
+  const { data, isLoading, isError } = useOrdens();
+  const ordens = (data ?? []).map(osSummaryDtoToOs);
 
   function openDrawer(os: OrdemServico) {
     setSelected(os);
@@ -37,10 +41,14 @@ export default function KanbanPage() {
         }
       />
 
-      {loading ? (
+      {isLoading ? (
         <KanbanSkeleton />
+      ) : isError ? (
+        <div className="rounded-2xl border border-[var(--status-alert)] bg-card p-6 text-center text-sm text-[var(--status-alert)]">
+          Erro ao carregar ordens de serviço. Verifique se a API está rodando.
+        </div>
       ) : (
-        <OsKanban ordens={ORDENS_SERVICO_MOCK} onSelectOs={openDrawer} />
+        <OsKanban ordens={ordens} onSelectOs={openDrawer} />
       )}
 
       <OsDrawer

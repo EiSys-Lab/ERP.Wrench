@@ -27,25 +27,28 @@ import {
   CLIENTE_TIPO_LABEL,
   CLIENTE_TIPO_TONE,
 } from "../types";
-import { CLIENTES_MOCK } from "../mock";
+import { useClientes } from "../hooks";
+import { clienteDtoToLocal } from "../api";
 import { brl, num, formatDate, formatDocumento, formatPhone } from "@/lib/formatters";
 import { SPRING_DRAWER, fadeUp } from "@/lib/motion";
-import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { toast } from "sonner";
 
 /**
  * Wrench ClientesView — lista de clientes com busca + drawer de detalhe.
+ * Fase 7: dados via TanStack Query (API real).
  */
 export function ClientesView() {
   const [busca, setBusca] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState("");
   const [selecionado, setSelected] = useState<Cliente | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const loading = useLoadingDelay();
+
+  const { data, isLoading, isError } = useClientes();
+  const todosClientes = (data ?? []).map(clienteDtoToLocal);
 
   const filtrados = useMemo(() => {
     const q = busca.toLowerCase().trim();
-    return CLIENTES_MOCK.filter((c) => {
+    return todosClientes.filter((c) => {
       const matchBusca =
         !q ||
         c.nome.toLowerCase().includes(q) ||
@@ -56,21 +59,32 @@ export function ClientesView() {
     });
   }, [busca, tipoFiltro]);
 
-  const totalClientes = CLIENTES_MOCK.length;
-  const totalVeiculos = CLIENTES_MOCK.reduce((s, c) => s + c.veiculos.length, 0);
-  const totalGasto = CLIENTES_MOCK.reduce((s, c) => s + c.totalGasto, 0);
+  const totalClientes = todosClientes.length;
+  const totalVeiculos = todosClientes.reduce((s, c) => s + c.veiculos.length, 0);
+  const totalGasto = todosClientes.reduce((s, c) => s + c.totalGasto, 0);
 
   function abrir(c: Cliente) {
     setSelected(c);
     setDrawerOpen(true);
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <>
         <PageHeader title="Clientes" subtitle="Carregando..." />
         <KpiGridSkeleton count={3} />
         <TableSkeleton rows={6} cols={7} />
+      </>
+    );
+  }
+
+  if (isError) {
+    return (
+      <>
+        <PageHeader title="Clientes" />
+        <div className="rounded-2xl border border-[var(--status-alert)] bg-card p-6 text-center text-sm text-[var(--status-alert)]">
+          Erro ao carregar clientes. Verifique se a API está rodando.
+        </div>
       </>
     );
   }
