@@ -10,26 +10,29 @@ import { GlassCard } from "@/components/atoms/glass-card";
 import { StatusBadge } from "@/components/atoms/status-badge";
 import { Separator } from "@/components/ui/separator";
 import { type Servico } from "../types";
-import {
-  SERVICOS_CATALOGO_MOCK,
-  CATEGORIAS_SERVICOS,
-} from "../mock";
+import { CATEGORIAS_SERVICOS } from "../mock";
+import { useServicos } from "../hooks";
+import { servicoDtoToLocal } from "../api";
 import { brl } from "@/lib/formatters";
 import { SPRING_DRAWER } from "@/lib/motion";
 import { toast } from "sonner";
 
 /**
  * Wrench ServicosView — catálogo de serviços (mão de obra).
+ * Fase 7: dados via TanStack Query (API real).
  */
 export function ServicosView() {
   const [busca, setBusca] = useState("");
   const [editando, setEditando] = useState<Servico | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const { data, isLoading } = useServicos();
+  const servicos = (data ?? []).map(servicoDtoToLocal);
+
   const filtrados = useMemo(() => {
     const q = busca.toLowerCase().trim();
-    if (!q) return SERVICOS_CATALOGO_MOCK;
-    return SERVICOS_CATALOGO_MOCK.filter(
+    if (!q) return servicos;
+    return servicos.filter(
       (s) =>
         s.nome.toLowerCase().includes(q) ||
         s.codigo.toLowerCase().includes(q) ||
@@ -181,7 +184,7 @@ export function ServicosView() {
                     <Wrench size={16} className="text-[var(--status-warn)]" />
                   </span>
                   <h2 className="text-sm font-semibold text-foreground">
-                    {SERVICOS_CATALOGO_MOCK.find((s) => s.id === editando.id)
+                    {servicos.find((s) => s.id === editando.id)
                       ? "Editar serviço"
                       : "Novo serviço"}
                   </h2>

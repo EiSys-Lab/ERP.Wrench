@@ -23,28 +23,31 @@ import {
   margem,
 } from "../types";
 import {
-  PECAS_CATALOGO_MOCK,
   CATEGORIAS_PECAS,
 } from "../mock";
+import { usePecas } from "../hooks";
+import { pecaDtoToLocal } from "../api";
 import { brl, pct, num } from "@/lib/formatters";
 import { SPRING_DRAWER } from "@/lib/motion";
-import { useLoadingDelay } from "@/lib/use-loading-delay";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 /**
  * Wrench PecasView — catálogo de peças com busca, tabela e drawer de edição.
+ * Fase 7: dados via TanStack Query (API real).
  */
 export function PecasView() {
   const [busca, setBusca] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
   const [editando, setEditando] = useState<Peca | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const loading = useLoadingDelay();
+
+  const { data, isLoading, isError } = usePecas();
+  const pecas = (data ?? []).map(pecaDtoToLocal);
 
   const filtradas = useMemo(() => {
     const q = busca.toLowerCase().trim();
-    return PECAS_CATALOGO_MOCK.filter((p) => {
+    return pecas.filter((p) => {
       const matchBusca =
         !q ||
         p.nome.toLowerCase().includes(q) ||
@@ -94,11 +97,22 @@ export function PecasView() {
     setDrawerOpen(false);
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <>
         <PageHeader title="Peças" subtitle="Carregando..." />
         <TableSkeleton rows={8} cols={7} />
+      </>
+    );
+  }
+
+  if (isError) {
+    return (
+      <>
+        <PageHeader title="Peças" />
+        <div className="rounded-2xl border border-[var(--status-alert)] bg-card p-6 text-center text-sm text-[var(--status-alert)]">
+          Erro ao carregar peças. Verifique se a API está rodando.
+        </div>
       </>
     );
   }
@@ -252,7 +266,7 @@ export function PecasView() {
                   </span>
                   <div>
                     <h2 className="text-sm font-semibold text-foreground">
-                      {PECAS_CATALOGO_MOCK.find((p) => p.id === editando.id)
+                      {pecas.find((p) => p.id === editando.id)
                         ? "Editar peça"
                         : "Nova peça"}
                     </h2>

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { WrenchLogo } from "@/components/atoms/wrench-logo";
 import { useAuth } from "@/store/use-auth";
 import { SPRING_DRAWER } from "@/lib/motion";
+import { apiPost } from "@/lib/api-client";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Informe o email").email("Email inválido"),
@@ -44,14 +45,19 @@ export default function LoginPage() {
   async function onSubmit(values: LoginValues) {
     setLoading(true);
     try {
-      // MOCK: simula latência de rede.
-      await new Promise((r) => setTimeout(r, 400));
-      login(values.email);
+      const resp = await apiPost<{ email: string; password: string }, {
+        token: string;
+        expiresAt: string;
+        user: { userId: string; email: string; nome: string; tenantId: string };
+      }>("/api/identity/login", values);
+
+      login(resp);
       toast.success("Bem-vindo ao Wrench");
       router.replace("/workspace");
-    } catch {
-      setError("root", { message: "Falha na autenticação" });
-      toast.error("Não foi possível entrar");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Falha na autenticação";
+      setError("root", { message });
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -123,7 +129,7 @@ export default function LoginPage() {
           </form>
 
           <p className="mt-6 text-center text-[10px] text-muted-foreground">
-            Demonstração · use qualquer email e senha
+            Acesso restrito · admin@wrench.com.br
           </p>
         </div>
       </motion.div>
