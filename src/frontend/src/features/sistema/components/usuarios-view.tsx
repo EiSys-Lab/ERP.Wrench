@@ -35,7 +35,7 @@ export function UsuariosView() {
 
       <GlassCard className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="responsive-table w-full">
             <thead>
               <tr className="border-b border-line text-left">
                 <th className="px-4 py-2.5">Usuário</th>

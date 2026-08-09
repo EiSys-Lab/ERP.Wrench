@@ -498,6 +498,49 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE TABLE — vira cards empilhados abaixo de 768px.
+   Uso: <table class="responsive-table"> com <td data-label="Título">.
+   No mobile cada linha vira um card e cada célula mostra seu label.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .responsive-table thead {
+    display: none;
+  }
+  .responsive-table tbody tr {
+    display: block;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    background: var(--card);
+  }
+  .responsive-table tbody tr:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.625rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .responsive-table td:last-child {
+    border-bottom: none;
+  }
+  /* Label do campo vem do attr data-label */
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted-foreground);
+    text-align: left;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    PAGE STAGGER — entrada escalonada via CSS puro (zero JS).
    .app-template envolve o conteúdo de cada rota (template.tsx do App Router).
    Opt-out: data-no-stagger no root da página.

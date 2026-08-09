@@ -152,7 +152,7 @@ export function PecasView() {
       {/* Tabela */}
       <GlassCard className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="responsive-table w-full">
             <thead>
               <tr className="border-b border-line text-left">
                 <th className="px-4 py-2.5">Código</th>
@@ -174,27 +174,27 @@ export function PecasView() {
                     onClick={() => abrirEdicao(p)}
                     className="cursor-pointer border-b border-line transition-colors last:border-0 hover:bg-[var(--glass-bg-hover)]"
                   >
-                    <td className="px-4 py-2.5">
+                    <td data-label="Código" className="px-4 py-2.5">
                       <span className="font-mono text-xs font-semibold tabular text-[var(--wrench-accent)]">
                         {p.codigo}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Nome" className="px-4 py-2.5">
                       <span className="text-sm font-medium text-foreground">
                         {p.nome}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Categoria" className="px-4 py-2.5">
                       <span className="text-[11px] text-muted-foreground">
                         {p.categoria}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Local" className="px-4 py-2.5">
                       <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                         {p.compartimento}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td data-label="Estoque" className="px-4 py-2.5 text-right">
                       <span className="tabular text-sm text-foreground">
                         {p.quantidadeEstoque}
                       </span>
@@ -202,12 +202,12 @@ export function PecasView() {
                         {" "}{p.unidade}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td data-label="Preço" className="px-4 py-2.5 text-right">
                       <span className="tabular text-sm font-medium text-foreground">
                         {brl(p.preco)}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Status" className="px-4 py-2.5">
                       <StatusBadge tone={st.tone} size="sm">
                         {st.label}
                       </StatusBadge>

@@ -119,7 +119,7 @@ export function ClientesView() {
       <motion.div {...fadeUp(0.1)}>
         <GlassCard className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="responsive-table w-full">
               <thead>
                 <tr className="border-b border-line text-left">
                   <th className="px-4 py-2.5">Cliente</th>
@@ -138,7 +138,7 @@ export function ClientesView() {
                     onClick={() => abrir(c)}
                     className="cursor-pointer border-b border-line transition-colors last:border-0 hover:bg-[var(--glass-bg-hover)]"
                   >
-                    <td className="px-4 py-2.5">
+                    <td data-label="Cliente" className="px-4 py-2.5">
                       <div className="flex items-center gap-2">
                         <span className="flex size-7 items-center justify-center rounded-full bg-[var(--wrench-accent-soft)] text-[10px] font-bold text-[var(--wrench-accent)]">
                           {c.nome[0]}
@@ -146,29 +146,29 @@ export function ClientesView() {
                         <span className="text-sm font-medium text-foreground">{c.nome}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Tipo" className="px-4 py-2.5">
                       <StatusBadge tone={CLIENTE_TIPO_TONE[c.tipo]} size="sm">
                         {CLIENTE_TIPO_LABEL[c.tipo]}
                       </StatusBadge>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Documento" className="px-4 py-2.5">
                       <span className="tabular text-[11px] text-muted-foreground">
                         {formatDocumento(c.documento)}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Veículos" className="px-4 py-2.5">
                       <span className="flex items-center gap-1 text-xs text-foreground">
                         <Car size={12} className="text-muted-foreground" />
                         {c.veiculos.length}
                       </span>
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td data-label="OS" className="px-4 py-2.5 text-right">
                       <span className="tabular text-sm text-foreground">{c.totalOs}</span>
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td data-label="Total gasto" className="px-4 py-2.5 text-right">
                       <span className="tabular text-sm font-medium text-foreground">{brl(c.totalGasto)}</span>
                     </td>
-                    <td className="px-4 py-2.5">
+                    <td data-label="Última OS" className="px-4 py-2.5">
                       <span className="text-[11px] text-muted-foreground">
                         {c.ultimaOs ? formatDate(c.ultimaOs) : "—"}
                       </span>
